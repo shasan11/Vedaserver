@@ -1,7 +1,6 @@
 # settings/urls.py
 from django.urls import path, include
 from rest_framework_bulk.routes import BulkRouter
-
 from settings.views import (
     CurrencyViewSet, CountryViewSet, LanguageViewSet,
     OrganizationViewSet, BranchViewSet,
