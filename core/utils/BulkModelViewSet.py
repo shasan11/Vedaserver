@@ -46,6 +46,9 @@ class BaseModelViewSet(BranchScopedMixin, BulkModelViewSet):
     search_fields = []
     filterset_class = None
 
+    def _model_has_field(self, model_cls, field_name: str) -> bool:
+        return any(getattr(f, "name", None) == field_name for f in model_cls._meta.get_fields())
+
     def _valid_branch_for(self, user):
         """Return a valid Branch object for this user, else None."""
         branch = getattr(user, "branch", None)
@@ -63,15 +66,18 @@ class BaseModelViewSet(BranchScopedMixin, BulkModelViewSet):
         return None
 
     def perform_create(self, serializer):
-        branch = self.request.user.branch
-        extra = {"branch": branch}
-        serializer.save(**extra)
-
-    def perform_update(self, serializer):
+        model_cls = serializer.Meta.model
+        branch = self._valid_branch_for(self.request.user)
         extra = {}
-        branch = self.request.user.branch
-        if branch is not None:
+        if branch and self._model_has_field(model_cls, "branch"):
             extra["branch"] = branch
         serializer.save(**extra)
 
+    def perform_update(self, serializer):
+        model_cls = serializer.Meta.model
+        branch = self._valid_branch_for(self.request.user)
+        extra = {}
+        if branch and self._model_has_field(model_cls, "branch"):
+            extra["branch"] = branch
+        serializer.save(**extra)
 
