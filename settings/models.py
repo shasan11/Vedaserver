@@ -3,8 +3,6 @@ import uuid
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
-from simple_history.models import HistoricalRecords
-
 from core.utils.coreModels import UUIDPk, StampedOwnedActive
 
 
@@ -87,8 +85,6 @@ class Organization(StampedOwnedActive):
 
     logo_url = models.URLField(blank=True, null=True)
 
-    history = HistoricalRecords(inherit=True)
-
     class Meta:
         db_table = "organizations"
 
@@ -126,8 +122,6 @@ class Branch(StampedOwnedActive):
     currency = models.ForeignKey(Currency, on_delete=models.PROTECT, blank=True, null=True)
 
     is_default = models.BooleanField(default=False, db_index=True)
-
-    history = HistoricalRecords(inherit=True)
 
     class Meta:
         db_table = "branches"
@@ -179,8 +173,6 @@ class OrganizationSettings(StampedOwnedActive):
     # payment configs (even if billing app owns transactions)
     payments = models.JSONField(default=dict, blank=True)  # {khalti/esewa/stripe keys}
 
-    history = HistoricalRecords(inherit=True)
-
     class Meta:
         db_table = "organization_settings"
 
@@ -196,8 +188,6 @@ class BranchSettings(StampedOwnedActive):
 
     branch = models.OneToOneField(Branch, on_delete=models.CASCADE, related_name="settings")
     data = models.JSONField(default=dict, blank=True)
-
-    history = HistoricalRecords(inherit=True)
 
     class Meta:
         db_table = "branch_settings"
@@ -223,8 +213,6 @@ class FeatureFlag(StampedOwnedActive):
 
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, blank=True, null=True)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE, blank=True, null=True)
-
-    history = HistoricalRecords(inherit=True)
 
     class Meta:
         db_table = "feature_flags"
@@ -269,8 +257,6 @@ class NumberSequence(StampedOwnedActive):
 
     reset_yearly = models.BooleanField(default=False)
     last_reset_year = models.PositiveSmallIntegerField(blank=True, null=True)
-
-    history = HistoricalRecords(inherit=True)
 
     class Meta:
         db_table = "number_sequences"
