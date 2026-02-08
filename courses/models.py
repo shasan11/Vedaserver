@@ -363,7 +363,11 @@ class CourseReview(StampedOwnedActive):
     Keeps an audit trail of approvals/rejections.
     """
 
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="reviews")
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        related_name="review_requests",
+    )
 
     status = models.CharField(max_length=20, choices=CourseReviewStatus.choices, default=CourseReviewStatus.REQUESTED, db_index=True)
 
@@ -388,7 +392,7 @@ class CourseReview(StampedOwnedActive):
     note = models.TextField(blank=True, null=True)  # rejection reason / feedback
 
     class Meta:
-        db_table = "course_reviews"
+        db_table = "course_review_requests"
         indexes = [
             models.Index(fields=["course", "status"]),
             models.Index(fields=["status", "requested_at"]),
