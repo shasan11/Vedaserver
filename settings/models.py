@@ -86,7 +86,7 @@ class Organization(StampedOwnedActive):
     logo_url = models.URLField(blank=True, null=True)
 
     class Meta:
-        db_table = "organizations"
+        db_table = "settings_organizations"
 
     def __str__(self):
         return self.name
